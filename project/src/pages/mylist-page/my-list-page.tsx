@@ -1,4 +1,4 @@
-export default function MylistPage(){
+export default function MyListPage(){
   return(
     <div>
       <div className="visually-hidden">
