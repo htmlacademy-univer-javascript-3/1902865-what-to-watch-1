@@ -1,3 +1,5 @@
+import Logo from '../../components/logo/logo';
+
 export default function SignInPage(){
   return(
     <div>
@@ -51,13 +53,7 @@ export default function SignInPage(){
 
       <div className="user-page">
         <header className="page-header user-page__head">
-          <div className="logo">
-            <a href="main.html" className="logo__link">
-              <span className="logo__letter logo__letter--1">W</span>
-              <span className="logo__letter logo__letter--2">T</span>
-              <span className="logo__letter logo__letter--3">W</span>
-            </a>
-          </div>
+          <Logo isLightVersion={false}/>
 
           <h1 className="page-title user-page__title">Sign in</h1>
         </header>
@@ -66,13 +62,21 @@ export default function SignInPage(){
           <form action="#" className="sign-in__form">
             <div className="sign-in__fields">
               <div className="sign-in__field">
-                <input className="sign-in__input" type="email" placeholder="Email address" name="user-email"
+                <input
+                  className="sign-in__input"
+                  type="email"
+                  placeholder="Email address"
+                  name="user-email"
                   id="user-email"
                 />
                 <label className="sign-in__label visually-hidden" htmlFor="user-email">Email address</label>
               </div>
               <div className="sign-in__field">
-                <input className="sign-in__input" type="password" placeholder="Password" name="user-password"
+                <input
+                  className="sign-in__input"
+                  type="password"
+                  placeholder="Password"
+                  name="user-password"
                   id="user-password"
                 />
                 <label className="sign-in__label visually-hidden" htmlFor="user-password">Password</label>
@@ -85,13 +89,7 @@ export default function SignInPage(){
         </div>
 
         <footer className="page-footer">
-          <div className="logo">
-            <a href="main.html" className="logo__link logo__link--light">
-              <span className="logo__letter logo__letter--1">W</span>
-              <span className="logo__letter logo__letter--2">T</span>
-              <span className="logo__letter logo__letter--3">W</span>
-            </a>
-          </div>
+          <Logo isLightVersion={false}/>
 
           <div className="copyright">
             <p>© 2019 What to watch Ltd.</p>

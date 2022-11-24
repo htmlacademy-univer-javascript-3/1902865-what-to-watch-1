@@ -1,11 +1,23 @@
-export default function CardFilm(){
+import {MouseEvent} from 'react';
+import {Link} from 'react-router-dom';
+import {AppRoute} from '../../const';
+
+type CardFilmProps = {
+  title: string,
+  image: string,
+  id: number,
+  onMouseOver: (evt: MouseEvent<HTMLDivElement>) => void;
+}
+
+
+export default function CardFilm({title, image, id, onMouseOver}: CardFilmProps): JSX.Element {
   return (
-    <article className="small-film-card catalog__films-card">
+    <article className="small-film-card catalog__films-card" onMouseOver={onMouseOver}>
       <div className="small-film-card__image">
-        <img src="img/fantastic-beasts-the-crimes-of-grindelwald.jpg" alt="Fantastic Beasts: The Crimes of Grindelwald" width="280" height="175" />
+        <img src={image} alt={title} width="280" height="175"/>
       </div>
       <h3 className="small-film-card__title">
-        <a className="small-film-card__link" href="film-page.html">Fantastic Beasts: The Crimes of Grindelwald</a>
+        <Link className="small-film-card__link" to={`${AppRoute.Film}/${id}`}>{title}</Link>
       </h3>
     </article>
   );
