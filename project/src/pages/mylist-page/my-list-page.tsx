@@ -85,7 +85,7 @@ export default function MyListPage({myList}: MyListProps): JSX.Element {
         </section>
 
         <footer className="page-footer">
-          <Logo isLightVersion />
+          <Logo isLightVersion/>
 
           <div className="copyright">
             <p>© 2019 What to watch Ltd.</p>
