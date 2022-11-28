@@ -4,7 +4,7 @@ import Details from '../details/details';
 import ReviewList from '../review-list/review-list';
 import Film from '../../types/film';
 import Reviews from '../../types/reviews';
-import {useState} from 'react';
+import {useAppSelector} from '../../hooks';
 import {FilmPageTabs} from '../../const';
 
 type FilmDescProps = {
@@ -13,18 +13,13 @@ type FilmDescProps = {
 }
 
 export default function FilmDescription ({film, reviews}: FilmDescProps): JSX.Element {
-  const [pageTab, setPageTab] = useState<string>(FilmPageTabs.Overview);
+  const currentTab = useAppSelector((state) => state.filmPageTab);
 
   return (
     <div className="film-card__desc">
-      <FilmTabs
-        currentTab={pageTab}
-        updateTab={(tabName: string) => {
-          setPageTab(tabName);
-        }}
-      />
+      <FilmTabs currentTab={currentTab} />
 
-      {pageTab === FilmPageTabs.Overview &&
+      {currentTab === FilmPageTabs.Overview &&
       <Overview
         rating={film.rating}
         scoresCount={film.scoresCount}
@@ -33,7 +28,7 @@ export default function FilmDescription ({film, reviews}: FilmDescProps): JSX.El
         starring={film.starring}
       />}
 
-      {pageTab === FilmPageTabs.Details &&
+      {currentTab === FilmPageTabs.Details &&
       <Details
         director={film.director}
         starring={film.starring}
@@ -42,7 +37,7 @@ export default function FilmDescription ({film, reviews}: FilmDescProps): JSX.El
         released={film.released}
       />}
 
-      {pageTab === FilmPageTabs.Reviews && <ReviewList reviews={reviews}/>}
+      {currentTab === FilmPageTabs.Reviews && <ReviewList reviews={reviews}/>}
     </div>
   );
 }

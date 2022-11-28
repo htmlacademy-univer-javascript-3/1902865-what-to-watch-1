@@ -1,11 +1,9 @@
 import FilmList from '../../components/film-list/film-list';
 import Promo from '../../types/promo';
-import Films from '../../types/films';
 import PromoCard from '../../components/promo-card/promo-card';
 import Logo from '../../components/logo/logo';
 type MainPageProps={
   promo: Promo,
-  films: Films
 }
 
 export default function MainPage(props:MainPageProps){
@@ -46,7 +44,7 @@ export default function MainPage(props:MainPageProps){
       <PromoCard promo={props.promo} />
 
       <div className="page-content">
-        <FilmList films={props.films} />
+        <FilmList />
 
         <footer className="page-footer">
           <Logo isLightVersion />

@@ -1,6 +1,8 @@
 import {Link} from 'react-router-dom';
 import {AppRoute} from '../../const';
 import PreviewPlayer from '../preview-player/preview-player';
+import {useAppDispatch} from '../../hooks';
+import {resetMainScreen} from '../../store/action';
 
 type CardFilmProps = {
   id: number,
@@ -8,16 +10,17 @@ type CardFilmProps = {
   image: string,
   previewVideo: string,
   isPointed: boolean,
-  changePointedFilm: (id: number) => void
+  onChangePointedFilm: (id: number) => void
 }
 
 export default function CardFilm(props: CardFilmProps): JSX.Element {
-  const {id, title, image, previewVideo, isPointed, changePointedFilm} = props;
+  const {id, title, image, previewVideo, isPointed, onChangePointedFilm} = props;
+  const dispatch = useAppDispatch();
   return (
     <article
       className="small-film-card catalog__films-card"
-      onMouseEnter={() => changePointedFilm(id)}
-      onMouseLeave={() => changePointedFilm(NaN)}
+      onMouseEnter={() => onChangePointedFilm(id)}
+      onMouseLeave={() => onChangePointedFilm(NaN)}
     >
       <div className="small-film-card__image">
         {
@@ -26,7 +29,14 @@ export default function CardFilm(props: CardFilmProps): JSX.Element {
         }
       </div>
       <h3 className="small-film-card__title">
-        <Link className="small-film-card__link" to={`${AppRoute.Film}/${id}`}>{title}</Link>
+        <Link
+          className="small-film-card__link"
+          to={`${AppRoute.Film}/${id}`}
+          onClick={() => (
+            dispatch(resetMainScreen()))}
+        >
+          {title}
+        </Link>
       </h3>
     </article>
   );
