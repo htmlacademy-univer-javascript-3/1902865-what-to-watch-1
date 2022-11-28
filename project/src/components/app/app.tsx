@@ -25,7 +25,7 @@ function App(props: AppProps): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<MainPage promo={props.promo} films={props.films} />}></Route>
+        <Route path='/' element={<MainPage promo={props.promo}/>}></Route>
         <Route path='/login' element={<SignInPage/>}></Route>
         <Route path='/mylist' element={<PrivateRoute authorizationStatus={AuthorizationStatus.Auth}><MyListPage myList={props.favorite}/></PrivateRoute>}></Route>
         <Route path='/films/:id' element={<FilmPage films={props.films} reviews={props.reviews} similar={props.similar} />}></Route>
