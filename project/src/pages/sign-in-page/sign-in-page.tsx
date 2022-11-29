@@ -1,7 +1,6 @@
 import Logo from '../../components/logo/logo';
-//import {useNavigate} from 'react-router-dom';
 import {useAppDispatch} from '../../hooks';
-import {FormEvent, useRef} from 'react';
+import {useRef} from 'react';
 import {loginAction} from '../../store/api-actions';
 import {AuthData} from '../../types/auth-data';
 
@@ -11,21 +10,9 @@ export default function SignInPage(){
 
 
   const dispatch = useAppDispatch();
-  //const navigate = useNavigate();
 
   const onSubmit = (authData: AuthData) => {
     dispatch(loginAction(authData));
-  };
-
-  const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
-    evt.preventDefault();
-
-    if (emailRef.current !== null && passwordRef.current !== null) {
-      onSubmit({
-        email: emailRef.current.value,
-        password: passwordRef.current.value,
-      });
-    }
   };
 
   return(
@@ -89,7 +76,6 @@ export default function SignInPage(){
           <form
             action="#"
             className="sign-in__form"
-            onSubmit={handleSubmit}
           >
             <div className="sign-in__fields">
               <div className="sign-in__field">

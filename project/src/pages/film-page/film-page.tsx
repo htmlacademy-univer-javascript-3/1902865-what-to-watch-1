@@ -1,24 +1,38 @@
-import Reviews from '../../types/reviews';
 import SimilarList from '../../components/similar-list/similar-list';
-import Similar from '../../types/similar';
-import {useParams} from 'react-router-dom';
-import Films from '../../types/films';
 import UnknownPage from '../../components/unknown-page/unknown-page';
 import Logo from '../../components/logo/logo';
 import FilmDescription from '../../components/film-description/film-description';
 import UserBlock from '../../components/user-block/user-block';
+import {Link, useParams} from 'react-router-dom';
+import {useAppDispatch, useAppSelector} from '../../hooks';
+import {AppRoute, AuthorizationStatus} from '../../const';
+import {useEffect} from 'react';
+import {setDataLoadedStatus} from '../../store/action';
+import {fetchCommentsByID, fetchFilmByID, fetchSimilarByID} from '../../store/api-actions';
+import LoadingPage from '../loading-page/loading-page';
 
-type FilmPageProps = {
-  films: Films,
-  reviews: Reviews,
-  similar: Similar
-}
-
-export default function FilmPage(props: FilmPageProps): JSX.Element {
-  const {films, reviews, similar} = props;
-
+export default function FilmPage(): JSX.Element {
   const id = Number(useParams().id);
-  const film = films.find((x) => x.id === id);
+
+  const film = useAppSelector((state) => state.film);
+  const comments = useAppSelector((state) => state.comments);
+  const similar = useAppSelector((state) => state.similar);
+  const authStatus = useAppSelector((state) => state.authorizationStatus);
+  const loadStatus = useAppSelector((state) => state.isDataLoaded);
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(setDataLoadedStatus(true));
+    dispatch(fetchFilmByID(id.toString()));
+    dispatch(fetchCommentsByID(id.toString()));
+    dispatch(fetchSimilarByID(id.toString()));
+    dispatch(setDataLoadedStatus(false));
+  }, [id, dispatch]);
+
+  if (loadStatus) {
+    return(<LoadingPage />);
+  }
 
   if (!film) {
     return <UnknownPage/>;
@@ -113,7 +127,8 @@ export default function FilmPage(props: FilmPageProps): JSX.Element {
                   <span>My list</span>
                   <span className="film-card__count">9</span>
                 </button>
-                <a href="add-review.html" className="btn film-card__button">Add review</a>
+                { authStatus === AuthorizationStatus.Auth &&
+                <Link to={`${AppRoute.Film}/${id}${AppRoute.AddReview}`} className="btn film-card__button">Add review</Link>}
               </div>
             </div>
           </div>
@@ -125,7 +140,7 @@ export default function FilmPage(props: FilmPageProps): JSX.Element {
               <img src={film.posterImage} alt={film.name} width="218" height="327" />
             </div>
 
-            <FilmDescription film={film} reviews={reviews} />
+            <FilmDescription film={film} reviews={comments} />
           </div>
         </div>
       </section>
