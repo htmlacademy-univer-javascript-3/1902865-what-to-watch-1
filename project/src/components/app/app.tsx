@@ -1,6 +1,6 @@
 import {AppRoute} from '../../const';
+import {Route, Routes} from 'react-router-dom';
 import MainPage from '../../pages/main-page/main-page';
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import SignInPage from '../../pages/sign-in-page/sign-in-page';
 import MyListPage from '../../pages/mylist-page/my-list-page';
 import FilmPage from '../../pages/film-page/film-page';
@@ -16,6 +16,8 @@ import Favorite from '../../types/favorite';
 import {useAppSelector} from '../../hooks';
 import {isCheckedAuth} from '../../utils/check-auth';
 import LoadingPage from '../../pages/loading-page/loading-page';
+import browserHistory from '../../browser-history';
+import HistoryRouter from '../history-route/history-route';
 
 type AppProps = {
   promo: Promo,
@@ -34,7 +36,7 @@ function App(props: AppProps): JSX.Element {
   }
 
   return (
-    <BrowserRouter>
+    <HistoryRouter history={browserHistory}>
       <Routes>
         <Route path={AppRoute.Root} element={<MainPage promo={props.promo}/>}></Route>
         <Route path={AppRoute.SignIn} element={<SignInPage/>}></Route>
@@ -57,12 +59,10 @@ function App(props: AppProps): JSX.Element {
           >
           </Route>
         </Route>
-        {/*<Route path=`/films/:id` element={<FilmPage films={props.films} reviews={props.reviews} similar={props.similar} />}></Route>*/}
-        {/*<Route path='/films/:id/review' element={<PrivateRoute authorizationStatus={authorizationStatus}><AddReviewPage/></PrivateRoute>}></Route>*/}
         <Route path='/player/:id' element={<PlayerPage/>}></Route>
         <Route path='*' element={<UnknownPage/>}></Route>
       </Routes>
-    </BrowserRouter>);
+    </HistoryRouter>);
 }
 
 export default App;
