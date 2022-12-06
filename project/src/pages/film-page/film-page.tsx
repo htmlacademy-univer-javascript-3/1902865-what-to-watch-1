@@ -1,40 +1,77 @@
+import {useEffect} from 'react';
+import {Link, useParams} from 'react-router-dom';
+
+import {
+  changeFilmStatusToView,
+  fetchCommentsByID,
+  fetchFavoriteFilmsAction,
+  fetchFilmByID,
+  fetchSimilarByID
+} from '../../store/api-actions';
+import {useAppDispatch, useAppSelector} from '../../hooks';
+
 import SimilarList from '../../components/similar-list/similar-list';
 import UnknownPage from '../../components/unknown-page/unknown-page';
 import Logo from '../../components/logo/logo';
-import FilmDescription from '../../components/film-description/film-description';
 import UserBlock from '../../components/user-block/user-block';
-import {Link, useParams} from 'react-router-dom';
-import {useAppDispatch, useAppSelector} from '../../hooks';
-import {AppRoute, AuthorizationStatus} from '../../const';
-import {useEffect} from 'react';
-import {setDataLoadedStatus} from '../../store/action';
-import {fetchCommentsByID, fetchFilmByID, fetchSimilarByID} from '../../store/api-actions';
+import FilmDescription from '../../components/film-description/film-description';
 import LoadingPage from '../loading-page/loading-page';
+import {AppRoute, AuthorizationStatus, FilmPageTabs} from '../../const';
+import {getFilm, getIsFilmFoundStatus, getIsFilmLoadingStatus, getSimilar} from '../../store/film-data/selectors';
+import {getAuthorizationStatus} from '../../store/user-process/selectors';
+import {changeFilmTab} from '../../store/film-data/film-data';
+import {getFavoriteCount} from '../../store/main-data/selectors';
+import {FilmStatus} from '../../types/film-status';
+import {setFavoriteCount, setIsDataLoaded} from '../../store/main-data/main-data';
+
 
 export default function FilmPage(): JSX.Element {
   const id = Number(useParams().id);
 
-  const film = useAppSelector((state) => state.film);
-  const comments = useAppSelector((state) => state.comments);
-  const similar = useAppSelector((state) => state.similar);
-  const authStatus = useAppSelector((state) => state.authorizationStatus);
-  const loadStatus = useAppSelector((state) => state.isDataLoaded);
+  const film = useAppSelector(getFilm);
+  const similar = useAppSelector(getSimilar);
+  const authStatus = useAppSelector(getAuthorizationStatus);
+
+  const isFilmFoundStatus = useAppSelector(getIsFilmFoundStatus);
+  const isFilmLoadingStatus = useAppSelector(getIsFilmLoadingStatus);
+  const favoriteCount = useAppSelector(getFavoriteCount);
 
   const dispatch = useAppDispatch();
 
+  const onAddFavoriteClick = () => {
+    const filmStatus: FilmStatus = {
+      filmId: film?.id || NaN,
+      status: film?.isFavorite ? 0 : 1
+    };
+
+    dispatch(changeFilmStatusToView(filmStatus));
+
+    if (film?.isFavorite) {
+      dispatch(setFavoriteCount(favoriteCount - 1));
+    } else {
+      dispatch(setFavoriteCount(favoriteCount + 1));
+    }
+  };
   useEffect(() => {
-    dispatch(setDataLoadedStatus(true));
+    dispatch(setIsDataLoaded(true));
+    dispatch(changeFilmTab(FilmPageTabs.Overview));
     dispatch(fetchFilmByID(id.toString()));
     dispatch(fetchCommentsByID(id.toString()));
     dispatch(fetchSimilarByID(id.toString()));
-    dispatch(setDataLoadedStatus(false));
-  }, [id, dispatch]);
 
-  if (loadStatus) {
-    return(<LoadingPage />);
+    if (authStatus === AuthorizationStatus.Auth) {
+      dispatch(fetchFavoriteFilmsAction());
+    }
+
+    dispatch(setIsDataLoaded(false));
+
+  }, [id, authStatus, dispatch]);
+
+  if (isFilmLoadingStatus) {
+    return <LoadingPage />;
   }
 
-  if (!film) {
+  if (!isFilmFoundStatus) {
     return <UnknownPage/>;
   }
 
@@ -94,7 +131,7 @@ export default function FilmPage(): JSX.Element {
       <section className="film-card film-card--full">
         <div className="film-card__hero">
           <div className="film-card__bg">
-            <img src={film.backgroundImage} alt={film.name} />
+            <img src={film?.backgroundImage} alt={film?.name} />
           </div>
 
           <h1 className="visually-hidden">WTW</h1>
@@ -107,10 +144,10 @@ export default function FilmPage(): JSX.Element {
 
           <div className="film-card__wrap">
             <div className="film-card__desc">
-              <h2 className="film-card__title">{film.name}</h2>
+              <h2 className="film-card__title">{film?.name}</h2>
               <p className="film-card__meta">
-                <span className="film-card__genre">{film.genre}</span>
-                <span className="film-card__year">{film.released}</span>
+                <span className="film-card__genre">{film?.genre}</span>
+                <span className="film-card__year">{film?.released}</span>
               </p>
 
               <div className="film-card__buttons">
@@ -120,15 +157,30 @@ export default function FilmPage(): JSX.Element {
                   </svg>
                   <span>Play</span>
                 </button>
-                <button className="btn btn--list film-card__button" type="button">
-                  <svg viewBox="0 0 19 20" width="19" height="20">
-                    <use xlinkHref="#add"></use>
-                  </svg>
-                  <span>My list</span>
-                  <span className="film-card__count">9</span>
-                </button>
+                {
+                  authStatus === AuthorizationStatus.Auth &&
+                  <button
+                    className="btn btn--list film-card__button"
+                    type="button"
+                    onClick={onAddFavoriteClick}
+                  >
+                    {
+                      film?.isFavorite ? <span>✓</span> :
+                        <svg viewBox="0 0 19 20" width="19" height="20">
+                          <use xlinkHref="#add"></use>
+                        </svg>
+                    }
+                    <span>My list</span>
+                    <span className="film-card__count">{favoriteCount}</span>
+                  </button>
+                }
                 { authStatus === AuthorizationStatus.Auth &&
-                <Link to={`${AppRoute.Film}/${id}${AppRoute.AddReview}`} className="btn film-card__button">Add review</Link>}
+                <Link
+                  to={`${AppRoute.Film}/${id}${AppRoute.AddReview}`}
+                  className="btn film-card__button"
+                >
+                  Add review
+                </Link>}
               </div>
             </div>
           </div>
@@ -137,10 +189,10 @@ export default function FilmPage(): JSX.Element {
         <div className="film-card__wrap film-card__translate-top">
           <div className="film-card__info">
             <div className="film-card__poster film-card__poster--big">
-              <img src={film.posterImage} alt={film.name} width="218" height="327" />
+              <img src={film?.posterImage} alt={film?.name} width="218" height="327" />
             </div>
 
-            <FilmDescription film={film} reviews={comments} />
+            <FilmDescription />
           </div>
         </div>
       </section>
