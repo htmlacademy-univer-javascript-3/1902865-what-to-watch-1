@@ -1,12 +1,22 @@
 import FilmList from '../../components/film-list/film-list';
-import Promo from '../../types/promo';
 import PromoCard from '../../components/promo-card/promo-card';
 import Logo from '../../components/logo/logo';
-type MainPageProps={
-  promo: Promo,
-}
+import {useAppDispatch, useAppSelector} from '../../hooks';
+import {useEffect} from 'react';
+import {getAuthorizationStatus} from '../../store/user-process/selectors';
+import {AuthorizationStatus} from '../../const';
+import {fetchFavoriteFilmsAction} from '../../store/api-actions';
 
-export default function MainPage(props:MainPageProps){
+export default function MainPage(): JSX.Element {
+  const dispatch = useAppDispatch();
+  const authStatus = useAppSelector(getAuthorizationStatus);
+
+  useEffect(() => {
+    if (authStatus === AuthorizationStatus.Auth) {
+      dispatch(fetchFavoriteFilmsAction());
+    }
+  }, [authStatus, dispatch]);
+
   return (
     <div>
       <div className="visually-hidden">
@@ -41,7 +51,7 @@ export default function MainPage(props:MainPageProps){
         </svg>
       </div>
 
-      <PromoCard promo={props.promo} />
+      <PromoCard />
 
       <div className="page-content">
         <FilmList />

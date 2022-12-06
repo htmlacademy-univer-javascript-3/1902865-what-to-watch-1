@@ -1,7 +1,8 @@
 import {AppRoute} from '../../const';
-import {resetMainScreen} from '../../store/action';
 import {Link} from 'react-router-dom';
 import {useAppDispatch} from '../../hooks';
+import {resetMainPage} from '../../store/main-data/main-data';
+
 
 type FilmCardProps = {
   id: number,
@@ -22,7 +23,7 @@ function DevFilmCard({id, title, image}: FilmCardProps): JSX.Element {
           className="small-film-card__link"
           to={`${AppRoute.Film}/${id}`}
           onClick={() => {
-            dispatch(resetMainScreen());
+            dispatch(resetMainPage());
           }}
         >
           {title}

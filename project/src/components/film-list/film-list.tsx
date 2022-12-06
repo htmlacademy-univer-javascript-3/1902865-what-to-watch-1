@@ -1,13 +1,12 @@
-import {useState} from 'react';
-import CardFilm from '../card-film/card-film';
-import GenresFilter from '../genres-filter/genres-filter';
 import {useAppSelector} from '../../hooks';
 import ShowMoreButton from '../show-more-button/show-more-button';
+import {getCardCount, getFilteredFilms} from '../../store/main-data/selectors';
 
+import GenresFilter from '../genres-filter/genres-filter';
+import CardFilm from '../card-film/card-film';
 export default function FilmList(): JSX.Element {
-  const [pointedFilm, setPointedFilm] = useState(NaN);
-  const films = useAppSelector((state) => state.filteredFilms);
-  const cardCount = useAppSelector((state) => state.cardCount);
+  const films = useAppSelector(getFilteredFilms);
+  const cardCount = useAppSelector(getCardCount);
 
   return (
     <section className="catalog">
@@ -23,11 +22,6 @@ export default function FilmList(): JSX.Element {
             title={film.name}
             image={film.previewImage}
             previewVideo={film.previewVideoLink}
-
-            isPointed={pointedFilm === film.id}
-            onChangePointedFilm={(pointedId: number) => {
-              setPointedFilm(pointedId);
-            }}
           />))}
       </div>
 
