@@ -10,8 +10,11 @@ type FilmCardProps = {
   image: string
 }
 
-function DevFilmCard({id, title, image}: FilmCardProps): JSX.Element {
+export default function DevFilmCard({id, title, image}: FilmCardProps): JSX.Element {
   const dispatch = useAppDispatch();
+  const cardClickHandle = () => {
+    dispatch(resetMainPage());
+  };
 
   return (
     <article className="small-film-card catalog__films-card">
@@ -22,9 +25,7 @@ function DevFilmCard({id, title, image}: FilmCardProps): JSX.Element {
         <Link
           className="small-film-card__link"
           to={`${AppRoute.Film}/${id}`}
-          onClick={() => {
-            dispatch(resetMainPage());
-          }}
+          onClick={cardClickHandle}
         >
           {title}
         </Link>
@@ -32,5 +33,3 @@ function DevFilmCard({id, title, image}: FilmCardProps): JSX.Element {
     </article>
   );
 }
-
-export default DevFilmCard;

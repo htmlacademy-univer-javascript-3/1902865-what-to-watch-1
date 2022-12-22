@@ -11,7 +11,7 @@ export default function FilmDescription (): JSX.Element {
   const film = useAppSelector(getFilm);
   const comments = useAppSelector(getComments);
   if (!film) {
-    return <div className="film-card__desc">NO FILMS</div>;
+    return <div className="film-card__desc"></div>;
   }
 
   return (
