@@ -7,6 +7,7 @@ import {
   fetchSimilarByID
 } from '../api-actions';
 import {FilmData} from '../../types/film-data';
+import {filterSimilar} from '../../utils/filter-similar';
 
 const initialState: FilmData = {
   film: null,
@@ -44,7 +45,7 @@ export const filmData = createSlice({
         state.isFilmLoadingStatus = false;
       })
       .addCase(fetchSimilarByID.fulfilled, (state, action) => {
-        state.similar = action.payload;
+        state.similar = filterSimilar(action.payload, state.film?.id);
       })
       .addCase(fetchCommentsByID.fulfilled, (state, action) => {
         state.comments = action.payload;
@@ -57,5 +58,4 @@ export const filmData = createSlice({
 
 export const {
   changeFilmTab,
-  resetFilmTab
 } = filmData.actions;

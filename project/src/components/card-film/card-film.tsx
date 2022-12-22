@@ -14,8 +14,8 @@ type CardFilmProps = {
 
 export default function CardFilm(props: CardFilmProps): JSX.Element {
   const {id, title, image, previewVideo} = props;
-
-  const [isPointed, setIsPointed] = useState(false); const dispatch = useAppDispatch();
+  const [isPointed, setIsPointed] = useState(false);
+  const dispatch = useAppDispatch();
   return (
     <article
       className="small-film-card catalog__films-card"

@@ -6,6 +6,7 @@ import {AuthData} from '../../types/auth-data';
 import {AppRoute, AuthorizationStatus} from '../../const';
 import {Navigate} from 'react-router-dom';
 import {getAuthorizationStatus} from '../../store/user-process/selectors';
+import {resetMainPage} from '../../store/main-data/main-data';
 
 export default function SignInPage(){
   const authStatus = useAppSelector(getAuthorizationStatus);
@@ -16,6 +17,7 @@ export default function SignInPage(){
   const dispatch = useAppDispatch();
 
   const onSubmit = (authData: AuthData) => {
+    dispatch(resetMainPage());
     dispatch(loginAction(authData));
   };
   const checkEmail = (email: string): boolean => {
